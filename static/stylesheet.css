@@ -1,0 +1,53 @@
+html, body {
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	background-color: #0f0d40;
+	font-family: Consolas, Verdana;
+}
+
+.content {
+	background-color: #000b33;
+	width: 800px;
+	height: auto;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 80px;
+	margin-bottom: 80px;
+	box-shadow: #d6fffb 0px 0px 50px;
+	text-align: center;
+	padding-top: 20px;
+	padding-bottom: 40px;
+	padding-left: 15px;
+	padding-right: 15px;
+	border-radius: 10px;
+}
+
+
+h1 {
+	color: #e3e3ff;
+	font-size: 40px;
+}
+
+h1 {
+	color: #e3e3ff;
+}
+p, a{
+	font-size: 18px;
+	margin: 5px 0px;
+}
+
+a:link {
+	color: #e3e3ff;
+}
+
+a:visited {
+	color: #ccccff;
+}
+
+.styled-image {
+	box-shadow: #d6fffb 0px 0px 20px;
+	height: 400px;
+}
