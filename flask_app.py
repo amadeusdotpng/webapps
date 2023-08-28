@@ -23,5 +23,9 @@ def bio_site_schedule():
 def bio_site_favorites():
     return send_from_directory(directory=app.static_folder, path='bio-site/favorites.htm')
 
+@app.route('/cringe-stylesheets')
+def cringess():
+    return send_from_directory(directory=app.static_folder, path='cringe-stylesheets/index.htm')
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=80)
