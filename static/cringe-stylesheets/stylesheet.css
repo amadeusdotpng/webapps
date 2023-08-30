@@ -1,0 +1,147 @@
+body {
+    background-image: url("/static/cringe-stylesheets/assets/bg.jpg");
+    background-size: 1000px;
+    font-family: "Verdana";
+    color: white;
+}
+
+p, a {
+    -webkit-text-stroke: 1px;
+    -webkit-text-stroke-color: black;
+    font-size: 4em;
+    color: red;
+}
+
+img {
+    box-shadow: black 0px 5px 20px;
+}
+
+div {
+    background-color: #92b4a7;
+    margin: auto;
+    width: 66%;
+    text-align: center;
+    border-radius: 100px;
+    box-shadow: black 0px 5px 5px;
+}
+
+.fade {
+    -webkit-animation: fade 5s infinite alternate;
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none
+}
+
+.fade:hover .dropdown-content {
+    color:aqua;
+    display: block;
+}
+
+@-webkit-keyframes fade {
+    0% { opacity: 0; }
+    40% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+.cringe-font-left {
+    color:white;
+    font-family: Monoton;
+    font-size: 8em;
+    -webkit-animation: moving-text-left 7.5s infinite alternate;
+    
+    margin: 0;
+    padding: 0;
+}
+
+.cringe-font-right {
+    color:white;
+    font-family: Monoton;
+    font-size: 8em;
+    -webkit-animation: moving-text-right 7.5s infinite alternate;
+
+    margin: 0;
+    padding: 0;
+}
+
+@-webkit-keyframes moving-text-left {
+    0% { transform: translateX(-50%);}
+    100% { transform: translateX(50%);}
+}
+
+@-webkit-keyframes moving-text-right {
+    0% { transform: translateX(50%);}
+    100% { transform: translateX(-50%);}
+}
+
+#cringe-header {
+    -webkit-text-stroke: 3px;
+    -webkit-text-stroke-color: black;
+    -webkit-animation: spaced-lettering 10s infinite alternate;
+    font-size: 5em;
+}
+
+@-webkit-keyframes spaced-lettering {
+    0% { letter-spacing: 0px; }
+    100% { letter-spacing: 1.5em; }
+}
+
+#cringe-image {
+    -webkit-animation: rotating-image 60s infinite;
+}
+
+@-webkit-keyframes rotating-image {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.i-love-css-red {
+    font-size: 10em;
+    -webkit-text-stroke: 5px;
+    -webkit-text-stroke-color: orange;
+    color: red;
+    margin: 0;
+    padding: 0;
+}
+.i-love-css-orange {
+    font-size: 10em;
+    -webkit-text-stroke: 5px;
+    -webkit-text-stroke-color: yellow;
+    color: orange;
+    margin: 0;
+    padding: 0;
+}
+.i-love-css-yellow {
+    font-size: 10em;
+    -webkit-text-stroke: 5px;
+    -webkit-text-stroke-color: green;
+    color: yellow;
+    margin: 0;
+    padding: 0;
+}
+.i-love-css-green {
+    font-size: 10em;
+    -webkit-text-stroke: 5px;
+    -webkit-text-stroke-color: indigo;
+    color: green;
+    margin: 0;
+    padding: 0;
+}
+.i-love-css-indigo {
+    font-size: 10em;
+    -webkit-text-stroke: 5px;
+    -webkit-text-stroke-color: purple;
+    color: indigo;
+    margin: 0;
+    padding: 0;
+}
+.i-love-css-purple {
+    font-size: 10em;
+    -webkit-text-stroke: 5px;
+    -webkit-text-stroke-color: red;
+    color: purple;
+    margin: 0;
+    padding: 0;
+}
