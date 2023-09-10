@@ -2,7 +2,6 @@ from flask import Flask, send_from_directory
 
 app = Flask(__name__)
 
-
 @app.route('/')
 def index():
     return send_from_directory(directory=app.static_folder, path='index.htm')
@@ -26,6 +25,10 @@ def bio_site_favorites():
 @app.route('/cringe-stylesheets')
 def cringess():
     return send_from_directory(directory=app.static_folder, path='cringe-stylesheets/index.htm')
+
+@app.route('/zengarden')
+def zengarden():
+    return send_from_directory(directory=app.static_folder, path='zengarden/index.htm')
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=80)
