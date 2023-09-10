@@ -89,6 +89,7 @@ footer {
 	background-clip: text;
 	background-image: linear-gradient(45deg,#e1cdff,#a56cff 50%,#5d2eff);
 	margin-bottom: 0.25em;
+	display: inline-block;
 }
 
 .preamble p {
@@ -110,6 +111,7 @@ footer {
 	background-clip: text;
 	background-image: linear-gradient(45deg,#ccefff,#60cafc 50%,#2f65ff);
 	margin-bottom: 0.25em;
+	display: inline-block;
 }
 
 .explanation p {
@@ -125,12 +127,12 @@ footer {
 }
 
 .participation h3 {
-	width: 45%;
 	font-size: 3em;
 	-webkit-text-fill-color: transparent;
 	background-clip: text;
 	background-image: linear-gradient(45deg,#ccefff, #ffc600 50%, #e8482e);
 	margin-bottom: 0.25em;
+	display: inline-block;
 }
 
 .participation p {
@@ -152,6 +154,7 @@ footer {
 	background-clip: text;
 	background-image: linear-gradient(45deg, #FBF4EC, #ECD7C8 ,#EEA4BC ,#BE88C4 ,#9186E7 ,#92C9F9 ,#C7F8FF );
 	margin-bottom: 0.25em;
+	display: inline-block;
 }
 
 .benefits p {
@@ -168,12 +171,12 @@ footer {
 }
 
 .requirements h3 {
-	width: 45%;
 	font-size: 3em;
 	-webkit-text-fill-color: transparent;
 	background-clip: text;
 	background-image: linear-gradient(45deg,#F0A72F 0%,#EC6C33 31.6%,#E34534 69.81%,#CD18C2);
 	margin-bottom: 0.25em;
+	display: inline-block;
 }
 
 .requirements p {
