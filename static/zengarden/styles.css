@@ -1,8 +1,6 @@
-html {
-	overscroll-behavior: none;
-}
 body {
-	background-image: linear-gradient(#620084, #090009 14%);
+	background-color: #090009;
+	background-image: linear-gradient(#090009, #2a0039 4%, #090009 14%);
 	font-family: "Helvetica Neue", Helvetica;
 	color: tomato;
 }
