@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+	<link rel="stylesheet" type="text/css" href="/static/quiz/stylesheet.css">
+	<title>Which House M.D. Character are You?</title>
+</head>
+<body>
+	<form action="" method="GET">
+		<div class="title">
+			<h1>{{question}}</h1>
+		</div>
+		<div class="content">
+			<div class="answers">
+			{% for answer in answers %}
+				{% set name = quiz_num+1 %}
+				{% set name = name | string %}
+				{% set name = "q"+name %}
+				<label class="answer">
+					<input type="radio" name="{{name}}" value="{{answer}}" required>
+					{{answers[answer][0]}}
+					{% if answers[answer][1] %}
+						<br>
+						<img src="/static/quiz/assets/{{answers[answer][1]}}">
+					{% endif %}
+				</label>
+				<br>
+				<br>
+			{% endfor %}
+			<input type="submit">
+			</div>
+		</div>
+		{% for arg in args %}
+			{% if arg == "quiz_num" %}
+				<input type="hidden" name="{{arg}}" value="{{quiz_num+1}}">
+			{% else %}
+				<input type="hidden" name="{{arg}}" value="{{args[arg]}}">
+			{% endif %}
+		{% endfor %}
+
+	</form>
+</body>
+</html>
