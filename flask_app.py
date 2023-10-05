@@ -111,6 +111,10 @@ def quiz_questions():
 
     return render_template("quiz/name.htm")
 
+@app.route('/game')
+def game():
+    return send_from_directory(directory=app.static_folder, path='game/index.htm')
+
 if __name__ == "__main__":
 #   app.secret_key = 'a_key_that_is_super_duper_secretive_and_no_one_knows_it'
     app.run(host='0.0.0.0', port=80)
