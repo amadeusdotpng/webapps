@@ -1,6 +1,12 @@
-from flask import Flask, send_from_directory, render_template, request
+from flask import Flask, send_from_directory, render_template, request, redirect
+import firebase_admin
+from firebase_admin import credentials, firestore
 
 app = Flask(__name__)
+
+cred = credentials.Certificate("./credentials.json")
+firebase_admin.initialize_app(cred)
+db = firestore.client()
 
 @app.route('/')
 def index():
@@ -115,6 +121,50 @@ def quiz_questions():
 def game():
     return send_from_directory(directory=app.static_folder, path='game/index.htm')
 
+@app.route('/survey')
+def survey():
+    return send_from_directory(directory=app.static_folder, path='survey/index.htm')
+
+@app.route('/survey/vote')
+def survey_vote():
+    if request.referrer is None:
+        return redirect('/survey/verify')
+
+    return send_from_directory(directory=app.static_folder, path='survey/vote.htm')
+
+@app.route('/survey/verify')
+def survey_verify():
+    if request.referrer is None:
+        return redirect('/survey')
+    # Check if user's already voted
+
+    return redirect('/survey/vote')
+
+@app.route('/survey/process', methods=['POST'])
+def survey_process():
+    if request.referrer is None:
+        return redirect('/survey')
+
+    vote = {
+        'lang': request.form.get('lang'),
+        'os': request.form.get('os'),
+        'editor': request.form.get('editor'),
+        'gaang': request.form.get('gaang'),
+        'timestamp': firestore.SERVER_TIMESTAMP,
+    }
+
+    db.collection('survey').add(vote)
+    return redirect('/survey/success')
+
+@app.route('/survey/success')
+def survey_success():
+    if request.referrer is None:
+        return redirect('/survey')
+
+    return send_from_directory(directory=app.static_folder, path='survey/success.htm')
+    
+    
+
 if __name__ == "__main__":
 #   app.secret_key = 'a_key_that_is_super_duper_secretive_and_no_one_knows_it'
-    app.run(host='0.0.0.0', port=80)
+    app.run(host='0.0.0.0', port=80, debug=True)

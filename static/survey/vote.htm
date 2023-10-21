@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+	<link rel="stylesheet" type="text/css" href="/static/survey/stylesheet.css">
+	<title>Vote!</title>
+</head>
+<body>
+	<div id="content">
+	<form action="/survey/process" method="POST">
+		<div class="question">
+			<h1>Which of the following is your favorite programming language?</h1>
+			<label>
+			<input required type="radio" value="java" name="lang">
+			<img src="/static/survey/assets/java.png">
+			</label>
+
+			<label>
+			<input required type="radio" value="python" name="lang">
+			<img src="/static/survey/assets/python.png">
+			</label>
+
+			<label>
+			<input required type="radio" value="c" name="lang">
+			<img src="/static/survey/assets/c.png">
+			</label>
+
+			<label>
+			<input required type="radio" value="cpp" name="lang">
+			<img src="/static/survey/assets/cpp.png">
+			</label>
+
+			<label>
+			<input required type="radio" value="csharp" name="lang">
+			<img src="/static/survey/assets/csharp.png">
+			</label>
+
+			<br>
+
+			<label>
+			<input required type="radio" value="rust" name="lang">
+			<img src="/static/survey/assets/rust.png">
+			</label>
+
+			<label>
+			<input required type="radio" value="haskell" name="lang">
+			<img src="/static/survey/assets/haskell.png">
+			</label>
+
+			<label>
+			<input required type="radio" value="javascript" name="lang">
+			<img src="/static/survey/assets/javascript.png">
+			</label>
+
+			<label>
+			<input required type="radio" value="bash" name="lang">
+			<img src="/static/survey/assets/bash.png">
+			</label>
+		</div>
+
+		<div class="question">
+			<h1>Which operating system do you use the most?</h1>
+
+			<label>
+			<input required type="radio" value="windows" name="os">
+			<img src="/static/survey/assets/windows.png">
+			</label>
+
+			<label>
+			<input required type="radio" value="macos" name="os">
+			<img src="/static/survey/assets/macos.png">
+			</label>
+
+			<label>
+			<input required type="radio" value="linux" name="os">
+			<img src="/static/survey/assets/linux.png">
+			</label>
+		</div>
+
+		<div class="question">
+			<h1>Vim or Emacs?</h1>
+
+			<label>
+			<input required type="radio" value="vim" name="editor">
+			<img src="/static/survey/assets/vim.png">
+			</label>
+
+			<label>
+			<input required type="radio" value="emacs" name="editor">
+			<img src="/static/survey/assets/emacs.png">
+			</label>
+					
+			<br>
+
+			<label>
+			<input required type="radio" value="neovim" name="editor">
+			<img src="/static/survey/assets/neovim.png">
+			</label>
+
+			<label>
+			<input required type="radio" value="nano" name="editor">
+			<img src="/static/survey/assets/nano.png">
+			</label>
+					
+			<label>
+			<input required type="radio" value="geany" name="editor">
+			<img src="/static/survey/assets/geany.png">
+			</label>
+
+			<label>
+			<input required type="radio" value="vscode" name="editor">
+			<img src="/static/survey/assets/vscode.png">
+			</label>
+		</div>
+
+		<div class="question">
+			<h1>Who's your favorite character in the Gaang?</h1>
+
+			<label>
+			<input required type="radio" value="aang" name="gaang">
+			<img src="/static/survey/assets/aang.png">
+			</label>
+
+			<label>
+			<input required type="radio" value="katara" name="gaang">
+			<img src="/static/survey/assets/katara.png">
+			</label>
+
+			<label>
+			<input required type="radio" value="sokka" name="gaang">
+			<img src="/static/survey/assets/sokka.png">
+			</label>
+
+			<label>
+			<input required type="radio" value="toph" name="gaang">
+			<img src="/static/survey/assets/toph.png">
+			</label>
+
+			<br>
+
+			<label>
+			<input required type="radio" value="zuko" name="gaang">
+			<img src="/static/survey/assets/zuko.jpg">
+			</label>
+
+			<label>
+			<input required type="radio" value="suki" name="gaang">
+			<img src="/static/survey/assets/suki.png">
+			</label>
+
+			<label>
+			<input required type="radio" value="appa" name="gaang">
+			<img src="/static/survey/assets/appa.png">
+			</label>
+
+			<label>
+			<input required type="radio" value="momo" name="gaang">
+			<img src="/static/survey/assets/momo.png">
+			</label>
+		</div>
+
+		<label>
+		<input type="submit">
+		</label>
+	</form>
+	</div>
+</body>
+</html>
