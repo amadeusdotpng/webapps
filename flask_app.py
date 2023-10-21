@@ -1,6 +1,7 @@
-from flask import Flask, send_from_directory, render_template, request, redirect
+from flask import Flask, send_from_directory, render_template, request, redirect, make_response
 import firebase_admin
 from firebase_admin import credentials, firestore
+import json
 
 app = Flask(__name__)
 
@@ -123,48 +124,80 @@ def game():
 
 @app.route('/survey')
 def survey():
-    return send_from_directory(directory=app.static_folder, path='survey/index.htm')
+    survey = {
+        'lang':{"java":0, "python":0, "c":0, "cpp":0, "csharp":0, "rust":0, "haskell":0, "javascript":0, "bash":0, },
+        'os':{"windows":0, "macos":0, "linux":0},
+        'editor':{"vim":0, "emacs":0, "neovim":0, "nano":0, "geany":0, "vscode":0, },
+        'gaang':{"aang":0, "katara":0, "sokka":0, "toph":0, "zuko":0, "suki":0, "appa":0, "momo":0, }
+    }
+    for doc in db.collection('survey').stream():
+        vote = doc.to_dict()
+        survey['lang'][vote['lang']]     += 1
+        survey['os'][vote['os']]         += 1
+        survey['editor'][vote['editor']] += 1
+        survey['gaang'][vote['gaang']]   += 1
+
+    return render_template('survey/index.htm', data=json.dumps(survey))
 
 @app.route('/survey/vote')
 def survey_vote():
-    if request.referrer is None:
-        return redirect('/survey/verify')
-
     return send_from_directory(directory=app.static_folder, path='survey/vote.htm')
 
-@app.route('/survey/verify')
+@app.route('/survey/verify', methods=['POST'])
 def survey_verify():
     if request.referrer is None:
         return redirect('/survey')
-    # Check if user's already voted
 
-    return redirect('/survey/vote')
+    cookie = request.cookies.get('cookie')
+    doc = db.collection('survey').document(cookie).get()
+    if doc.exists:
+        return redirect('/survey/failure')
+
+    return redirect('/survey/process', code=307) # Code 307 preserves POST request
 
 @app.route('/survey/process', methods=['POST'])
 def survey_process():
     if request.referrer is None:
         return redirect('/survey')
 
-    vote = {
-        'lang': request.form.get('lang'),
-        'os': request.form.get('os'),
-        'editor': request.form.get('editor'),
-        'gaang': request.form.get('gaang'),
-        'timestamp': firestore.SERVER_TIMESTAMP,
+    opt = {
+        "lang":["java", "python", "c", "cpp", "csharp", "rust", "haskell", "javascript", "bash"],
+        "os":["windows", "macos", "linux"],
+        "editor":["vim", "emacs", "neovim", "nano", "geany", "vscode"],
+        "gaang":["aang", "katara", "sokka", "toph", "zuko", "suki", "appa", "momo"],
     }
+    
+    vote = {}
+    for key in opt:
+        input = request.form[key]
+        if input not in opt[key]:
+            return redirect('/survey/error')
+        vote[key] = input
 
-    db.collection('survey').add(vote)
-    return redirect('/survey/success')
+    vote_ref = db.collection('survey').add(vote)
+    resp = make_response(redirect('/survey/success'))
+    resp.set_cookie('cookie', vote_ref[-1].id)
+    return resp
 
 @app.route('/survey/success')
 def survey_success():
     if request.referrer is None:
         return redirect('/survey')
-
     return send_from_directory(directory=app.static_folder, path='survey/success.htm')
-    
+
+@app.route('/survey/failure')
+def survey_failure():
+    if request.referrer is None:
+        return redirect('/survey')
+    return send_from_directory(directory=app.static_folder, path='survey/failure.htm')
+
+@app.route('/survey/error')
+def survey_error():
+    if request.referrer is None:
+        return redirect('/survey')
+    return send_from_directory(directory=app.static_folder, path='survey/error.htm')
     
 
 if __name__ == "__main__":
-#   app.secret_key = 'a_key_that_is_super_duper_secretive_and_no_one_knows_it'
+    app.json.sort_keys = False
     app.run(host='0.0.0.0', port=80, debug=True)

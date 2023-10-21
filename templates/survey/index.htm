@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+
+<html lang="en-US">
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="/static/survey/stylesheet.css">
+	<title>Developer Survey</title>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+
+</head>
+<body>
+	<div id="content">
+		<div id="header">
+			<h1>Developer Survey</h1>
+		</div>
+
+		<div id="vote">
+			<p>
+				Haven't voted yet?<br>
+				Click <a href="/survey/vote">here</a> to vote now!
+			</p>
+		</div>
+
+		<div class="stat">
+			<h1>Favorite Programming Language</h1>
+			<canvas id="lang">
+			</canvas>
+		</div>
+	
+		<div class="stat">
+			<h1>Top Operating System</h1>
+			<canvas id="os">
+			</canvas>
+		</div>
+
+		<div class="stat">
+			<h1>Top Code Editor</h1>
+			<canvas id="editor">
+			</canvas>
+		</div>
+
+		<div class="stat">
+			<h1>Favorite Character</h1>
+			<canvas id="gaang">
+			</canvas>
+		</div>
+	</div>
+
+	<script>
+	Chart.defaults.global.defaultFontColor = "#cdd6f4";
+	const data = JSON.parse({{data|tojson}})
+
+	const lang = new Chart("lang", {
+		type: "bar",
+		data: {
+			labels: ["Java", "Python", "C", "C++", "C#", "Rust", "Haskell", "Javascript", "Bash"],
+			datasets: [{
+				backgroundColor:["#6a00ff", "#ff00ff", "#ff0040", "#ff9500", "#ffff00", "#aaff00", "#00ff15", "#00ffff", "#0095ff"],
+				data: Object.values(data.lang)
+			}]
+		},
+		options: {
+			legend: {display: false},
+			scales: {
+				xAxes: [{gridLines: {zeroLineColor: "#f5e0dc", color: "#f5e0dc40"}}],
+				yAxes: [{
+					gridLines: {zeroLineColor: "#f5e0dc", color: "#f5e0dc40"},
+					ticks: {stepSize: 1}
+				}],
+			}
+		}
+	});
+
+	const os = new Chart("os", {
+	  type: "doughnut",
+	  data: {
+		labels: ["Windows", "MacOS", "Linux"],
+		datasets: [{
+			backgroundColor:["#21b0fe", "#fe218b", "#fed700"],
+			data: Object.values(data.os)
+		}]
+	  },
+	  options: {}
+	});
+
+	const editor = new Chart("editor", {
+		type: "bar",
+		data: {
+			labels: ["Vim", "Emacs", "Neovim", "Nano", "Geany", "Visual Studio Code"],
+			datasets: [{
+				backgroundColor:["#adff02", "#8f00ff", "#ff006d", "#ff7d00", "#ffdd00", "#01befe"],
+				data: Object.values(data.editor)
+			}]
+		},
+		options: {
+			legend: {display: false},
+			scales: {
+				xAxes: [{gridLines: {zeroLineColor: "#f5e0dc", color: "#f5e0dc40"}}],
+				yAxes: [{
+					gridLines: {zeroLineColor: "#f5e0dc", color: "#f5e0dc40"},
+					ticks: {stepSize: 1}
+				}],
+			}
+		}
+	});
+
+	const gaang = new Chart("gaang", {
+	  type: "pie",
+	  data: {
+		labels: ["Aang", "Katara", "Sokka", "Toph", "Zuko", "Suki", "Appa", "Momo"],
+		datasets: [{
+			backgroundColor:["#ffc107", "#1565c0", "#448aff", "#8bc34a", "#f44336", "#009688", "#ad1457", "#ff9800"],
+			data: Object.values(data.gaang)
+		}]
+	  },
+	  options: {}
+	});
+	</script>
+
+	
+</body>
+</html>

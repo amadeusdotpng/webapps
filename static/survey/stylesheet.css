@@ -1,6 +1,7 @@
 body {
-	background-color: #fccad7;
+	background-color: #1e1e2e;
 	font-family: Consolas, Verdana;
+	color: #f5c2e7;
 	padding: 0px;
 }
 
@@ -43,7 +44,7 @@ h1 {
 
 .question, .stat{
 	margin: 0 0 100px;
-	background-color: #ff96b2;
+	background-color: #181825;
 	width: 50%;
 	margin: 50px auto;
 	padding: 50px 25px 50px;
