@@ -141,6 +141,12 @@ def survey():
 
 @app.route('/survey/vote')
 def survey_vote():
+    cookie = request.cookies.get('cookie')
+    if cookie is not None:
+        doc = db.collection('survey').document(cookie).get()
+        if doc.exists:
+            return redirect('/survey/failure')
+
     return send_from_directory(directory=app.static_folder, path='survey/vote.htm')
 
 @app.route('/survey/verify', methods=['POST'])
@@ -155,7 +161,7 @@ def survey_verify():
 
     return redirect('/survey/process', code=307) # Code 307 preserves POST request
 
-@app.route('/survey/process', methods=['POST'])
+@app.route('/survey/process', methods=['GET', 'POST'])
 def survey_process():
     if request.referrer is None:
         return redirect('/survey')
