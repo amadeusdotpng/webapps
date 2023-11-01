@@ -179,7 +179,7 @@ def survey_process():
         if input not in opt[key]:
             return redirect('/survey/error')
         vote[key] = input
-
+    vote['timestamp'] = firestore.SERVER_TIMESTAMP
     vote_ref = db.collection('survey').add(vote)
     resp = make_response(redirect('/survey/success'))
     resp.set_cookie('cookie', vote_ref[-1].id)
