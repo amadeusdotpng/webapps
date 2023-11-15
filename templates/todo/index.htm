@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+
+<html lang="en-US">
+<head>
+	<link rel="stylesheet" type="text/css" href="/static/todo/stylesheet.css">
+	<script type="text/javascript" src="/static/todo/script.js"></script>
+	<title>Todo List</title>
+</head>
+<body>
+	<div id="header">
+		<h1>Todo List</h1>
+	</div>
+	<div id="content">
+
+		<div id="add_list">
+			<input type="text" id="list_name" placeholder="Your new list's name"/>
+			<input type="button" id="add_list_btn" value="Add List" onclick="add_list();"/>
+		</div>
+
+		<div id="lists">
+			<p>Loading Lists</p>
+		</div>
+	</div>
+</body>
+</html>

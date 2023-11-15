@@ -1,4 +1,4 @@
-from flask import Flask, send_from_directory, render_template, request, redirect, make_response
+from flask import Flask, send_from_directory, render_template, request, redirect, make_response, jsonify
 import firebase_admin
 from firebase_admin import credentials, firestore
 import json
@@ -9,10 +9,14 @@ cred = credentials.Certificate("./credentials.json")
 firebase_admin.initialize_app(cred)
 db = firestore.client()
 
+# Landing Page
+# ------------
 @app.route('/')
 def index():
     return send_from_directory(directory=app.static_folder, path='index.htm')
 
+# Bio Site
+# --------
 @app.route('/bio-site')
 def bio_site():
     return send_from_directory(directory=app.static_folder, path='bio-site/index.htm')
@@ -29,14 +33,20 @@ def bio_site_schedule():
 def bio_site_favorites():
     return send_from_directory(directory=app.static_folder, path='bio-site/favorites.htm')
 
+# Cringe Stylesheets
+# ------------------
 @app.route('/cringe-stylesheets')
 def cringess():
     return send_from_directory(directory=app.static_folder, path='cringe-stylesheets/index.htm')
 
+# Zen Garden
+# ----------
 @app.route('/zengarden')
 def zengarden():
     return send_from_directory(directory=app.static_folder, path='zengarden/index.htm')
 
+# Quiz
+# ----
 @app.route('/quiz')
 def quiz():
     return send_from_directory(directory=app.static_folder, path='quiz/index.htm')
@@ -118,10 +128,14 @@ def quiz_questions():
 
     return render_template("quiz/name.htm")
 
+# Game
+# ----
 @app.route('/game')
 def game():
     return send_from_directory(directory=app.static_folder, path='game/index.htm')
 
+# Survey
+# ------
 @app.route('/survey')
 def survey():
     survey = {
@@ -202,7 +216,70 @@ def survey_error():
     if request.referrer is None:
         return redirect('/survey')
     return send_from_directory(directory=app.static_folder, path='survey/error.htm')
+
+@app.route('/todo')
+def todo():
+    return render_template('todo/index.htm')
+
+@app.route('/todo/list')
+def todo_list():
+    docref = db.collection('todo_list')
+    docs = docref.stream()
+    out = []
+    for doc in docs:
+        doc_dict = doc.to_dict()
+        doc_dict['listid'] = doc.id
+        doc_items = docref.document(doc.id).collection('items').stream()
+        items = []
+        for item in doc_items:
+            item_dict = item.to_dict()
+            item_dict['itemid'] = item.id
+            items.append(item_dict)
+        doc_dict['items'] = items
+
+        out.append(doc_dict)
+    return jsonify(out)
     
+@app.route('/todo/addlist')
+def todo_addlist():
+    if 'name' in request.args:
+        name = request.args['name']
+        db.collection('todo_list').add({
+            'name': name,
+            'timestamp': firestore.SERVER_TIMESTAMP,
+        })
+    return redirect('/todo')
+
+@app.route('/todo/additem/<list_id>')
+def todo_additem(list_id):
+    if 'name' in request.args:
+        docref = db.document(f'todo_list/{list_id}')
+        if docref.get().exists:
+            docref.collection('items').add({
+                'name': request.args['name'],
+                'is_complete': False,
+                'timestamp': firestore.SERVER_TIMESTAMP,
+            })
+    return redirect('/todo')
+
+@app.route('/todo/delitem/<list_id>/<item_id>')
+def todo_delitem(list_id, item_id):
+    db.document(f'todo_list/{list_id}/items/{item_id}').delete()
+    return redirect('/todo')
+
+@app.route('/todo/dellist/<list_id>')
+def todo_dellist(list_id):
+    db.document(f'todo_list/{list_id}').delete()
+    return redirect('/todo')
+
+@app.route('/todo/toggleitem/<list_id>/<item_id>')
+def todo_toggleitem(list_id, item_id):
+    docref = db.document(f'todo_list/{list_id}/items/{item_id}')
+    doc = docref.get()
+    if doc.exists:
+        is_complete = doc.to_dict().get('is_complete', False)
+        docref.update({'is_complete': not is_complete})
+    return redirect('/todo')
 
 if __name__ == "__main__":
     app.json.sort_keys = False
