@@ -269,7 +269,11 @@ def todo_delitem(list_id, item_id):
 
 @app.route('/todo/dellist/<list_id>')
 def todo_dellist(list_id):
-    db.document(f'todo_list/{list_id}').delete()
+    docref = db.document(f'todo_list/{list_id}')
+    docs = docref.collection('items').list_documents()
+    for doc in docs:
+        doc.delete()
+    docref.delete()
     return redirect('/todo')
 
 @app.route('/todo/toggleitem/<list_id>/<item_id>')
