@@ -1,13 +1,81 @@
-from flask import Flask, send_from_directory, render_template, request, redirect, make_response, jsonify
+from flask import Flask, send_from_directory, render_template, request, redirect, make_response, jsonify, session, abort
 import firebase_admin
 from firebase_admin import credentials, firestore
+from google.oauth2 import id_token
+from google_auth_oauthlib.flow import Flow
+from pip._vendor import cachecontrol
+import google.auth.transport.requests
+import requests
 import json
+# import os
+
 
 app = Flask(__name__)
+
+app.secret_key = "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"
+# os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1" # REMOVE THIS WHEN YOU DEPLOY
+
+GOOGLE_CLIENT_ID = "919107238969-h5u692gck2e7j5v257bidtb75ohf6qg7.apps.googleusercontent.com"
+
+flow = Flow.from_client_secrets_file(
+    client_secrets_file = "login_creds.json",
+	scopes=["https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email", "openid"],
+    redirect_uri="http://orlinab.pythonanywhere.com/callback" # FIX THIS WHEN YOU DEPLOY
+)
 
 cred = credentials.Certificate("./credentials.json")
 firebase_admin.initialize_app(cred)
 db = firestore.client()
+
+# Login Wrapper
+# -------------
+def required_login(from_page):  # A function to check if the user is authorized or not
+    def _decorator(func):
+        def wrapper(*args, **kwargs):
+            if "sub" not in session:  # Auth is required
+                session['from_page'] = from_page
+                return redirect("/login")
+            else:
+                return func()
+        return wrapper
+    return _decorator
+    
+# Login Things
+# ------------
+@app.route("/login") # Google login screen 
+def login():
+    if "sub" in session:
+        return redirect(session.get('from_page', '/'))
+    authorization_url, state = flow.authorization_url()
+    session["state"] = state
+    return redirect(authorization_url)
+
+@app.route("/logout") # Logout Endpoint
+def logout():
+    session.clear()
+    return redirect("/")
+
+
+@app.route("/callback") # Callback handler after authorization
+def callback():
+    flow.fetch_token(authorization_response=request.url)
+
+    if not session["state"] == request.args["state"]:
+        abort(500)  #state does not match!
+
+    credentials = flow.credentials
+    request_session = requests.session()
+    cached_session = cachecontrol.CacheControl(request_session)
+    token_request = google.auth.transport.requests.Request(session=cached_session)
+
+    id_info = id_token.verify_oauth2_token(
+        id_token=credentials._id_token,
+        request=token_request,
+        audience=GOOGLE_CLIENT_ID
+    )
+    session.update(id_info)
+    print(session)
+    return redirect(session.get('from_page', '/'))
 
 # Landing Page
 # ------------
@@ -217,6 +285,8 @@ def survey_error():
         return redirect('/survey')
     return send_from_directory(directory=app.static_folder, path='survey/error.htm')
 
+# Todo List
+# ---------
 @app.route('/todo')
 def todo():
     return render_template('todo/index.htm')
@@ -284,6 +354,95 @@ def todo_toggleitem(list_id, item_id):
         is_complete = doc.to_dict().get('is_complete', False)
         docref.update({'is_complete': not is_complete})
     return redirect('/todo')
+
+
+# Todo List with Login
+# --------------------
+@app.route('/todo-login', endpoint='todo_login')
+@required_login('/todo-login')
+def todo_login():
+    return render_template('todo_login/index.htm')
+
+def check_email_exists(email):
+    docref = db.document(f'todo_list_login_users/{email}')
+    if not docref.get().exists:
+        db.document(f'todo_list_login_users/{email}').set({
+            'name': session['name'],
+            'timestamp': firestore.SERVER_TIMESTAMP
+        })
+    
+@app.route('/todo-login/addlist')
+def todo_login_addlist():
+    email = session['email']
+    check_email_exists(email)
+    if 'name' in request.args:
+        name = request.args['name']
+        db.collection(f'todo_list_login_users/{email}/todo_list').add({
+            'name': name,
+            'timestamp': firestore.SERVER_TIMESTAMP,
+        })
+    return redirect('/todo-login')
+
+@app.route('/todo-login/additem/<list_id>')
+def todo_login_additem(list_id):
+    email = session['email']
+    check_email_exists(email)
+    if 'name' in request.args:
+        docref = db.document(f'todo_list_login_users/{email}/todo_list/{list_id}')
+        if docref.get().exists:
+            docref.collection('items').add({
+                'name': request.args['name'],
+                'is_complete': False,
+                'timestamp': firestore.SERVER_TIMESTAMP,
+            })
+    return redirect('/todo-login')
+
+@app.route('/todo-login/delitem/<list_id>/<item_id>')
+def todo_login_delitem(list_id, item_id):
+    email = session['email']
+    db.document(f'todo_list_login_users/{email}/todo_list/{list_id}/items/{item_id}').delete()
+    return redirect('/todo-login')
+
+@app.route('/todo-login/dellist/<list_id>')
+def todo_login_dellist(list_id):
+    email = session['email']
+    docref = db.document(f'todo_list_login_users/{email}/todo_list/{list_id}')
+    docs = docref.collection('items').list_documents()
+    for doc in docs:
+        doc.delete()
+    docref.delete()
+    return redirect('/todo-login')
+
+@app.route('/todo-login/toggleitem/<list_id>/<item_id>')
+def todo_login_toggleitem(list_id, item_id):
+    email = session['email']
+    docref = db.document(f'todo_list_login_users/{email}/todo_list/{list_id}/items/{item_id}')
+    doc = docref.get()
+    if doc.exists:
+        is_complete = doc.to_dict().get('is_complete', False)
+        docref.update({'is_complete': not is_complete})
+    return redirect('/todo-login')
+
+@app.route('/todo-login/list')
+def todo_login_list():
+    email = session['email']
+    docref = db.collection(f'todo_list_login_users/{email}/todo_list')
+    docs = docref.stream()
+    out = []
+    for doc in docs:
+        doc_dict = doc.to_dict()
+        doc_dict['listid'] = doc.id
+        doc_items = docref.document(doc.id).collection('items').stream()
+        items = []
+        for item in doc_items:
+            item_dict = item.to_dict()
+            item_dict['itemid'] = item.id
+            items.append(item_dict)
+        doc_dict['items'] = items
+
+        out.append(doc_dict)
+    return jsonify(out)
+ 
 
 if __name__ == "__main__":
     app.json.sort_keys = False

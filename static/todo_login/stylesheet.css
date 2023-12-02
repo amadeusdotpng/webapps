@@ -1,0 +1,152 @@
+body {
+	background-color: #e8ecf2;
+	color: #0c2744;
+	font-family: Consolas;
+}
+
+#header {
+	width: 50%;
+	margin: 75px auto 0px;
+	text-align: center;
+	font-size: 36px;
+}
+
+#content {
+	width: 95%;
+	margin: 50px auto 0px;
+}
+
+#lists {
+	display: flex;
+	justify-content: center;
+	flex-wrap: wrap;
+	text-align: center;
+}
+
+#add_list {
+	text-align: center;
+	margin: auto auto 2.5em auto;
+}
+
+#list_name {
+	width: 35%;
+}
+
+.list {
+	background-color: #fbfcfc;
+	width: 30em;
+	min-height: 30em;
+	margin: 2em 1%;
+	text-align: center;
+	font-size: 16px;
+	box-shadow: 0px 5px 10px #ffffff;
+	padding: 0.1em 2.5em;
+}
+
+.list-content {
+	text-align: left;
+	font-size: 20px;
+}
+
+.list-content ul {
+	margin: 2.5em auto 1.5em auto;
+}
+
+.incomplete:hover, .completed:hover {
+	cursor: pointer;
+}
+
+.incomplete:hover {
+	text-decoration: line-through 3px #0c2744df;
+}
+
+.completed {
+	text-decoration: line-through 3px #0c2744ff;
+}
+
+.completed:hover {
+	text-decoration: line-through 3px #0c27445f;
+}
+
+.item-name {
+	width: 65%;
+	margin: auto 0.25em auto auto;
+}
+
+.add-item {
+	margin: auto auto 1.em auto;
+}
+
+.add-item > input[type=text],
+.add-item > input[type=button] {
+	opacity: 0.10;
+}
+.add-item:hover > input[type=text],
+.add-item:hover > input[type=button] {
+	opacity: 1.00;
+}
+
+.list-title {
+	display: flex;
+	justify-content: center;
+	flex-wrap: wrap;
+	text-align: center;
+}
+.list-title:hover > img {
+	cursor: pointer;
+	display: block;
+}
+
+label {
+	display: block;
+}
+
+li {
+	margin: 0.05em auto;
+	padding: 0 0em 0 0;
+	word-wrap: break-word;
+}
+
+img {
+	display: none;
+	padding: 0 0 0 0.25em;
+}
+
+li:hover > img {
+	display: inline;
+}
+
+
+input[type=text], input[type=button] {
+	height: 2.5em;
+	border-width: 0;
+	border-radius: 0.5em;
+	text-align: center;
+	font-family: Consolas;
+	font-size: 18px;
+	background-color: #a3b1bc;
+	color: #0c2744;
+}
+
+input[type=text]:hover {
+	outline: #4e5f6e solid 1.5px;
+}
+
+input[type=text]:focus {
+	outline: #031c34 solid 2px;
+}
+
+input[type=text]:focus,
+input[type=text]:focus + input[type=button]{
+	opacity: 1.00;
+}
+
+input[type=button] {
+	border-width: 2px;
+	border-color: #4281a5;
+	margin: auto 0.5em;
+}
+
+input[type=button]:hover {
+	outline: #4281a5 outset 1px
+}
