@@ -20,7 +20,7 @@ GOOGLE_CLIENT_ID = "919107238969-h5u692gck2e7j5v257bidtb75ohf6qg7.apps.googleuse
 flow = Flow.from_client_secrets_file(
     client_secrets_file = "login_creds.json",
 	scopes=["https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email", "openid"],
-    redirect_uri="http://orlinab.pythonanywhere.com/callback" # FIX THIS WHEN YOU DEPLOY
+    redirect_uri="https://orlinab.pythonanywhere.com/callback" # FIX THIS WHEN YOU DEPLOY
 )
 
 cred = credentials.Certificate("./credentials.json")
