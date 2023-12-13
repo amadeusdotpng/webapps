@@ -1,9 +1,11 @@
 from flask import Flask, send_from_directory, render_template, request, redirect, make_response, jsonify, session, abort
 import firebase_admin
 from firebase_admin import credentials, firestore
+from google.cloud.firestore_v1.base_query import FieldFilter
 from google.oauth2 import id_token
 from google_auth_oauthlib.flow import Flow
 from pip._vendor import cachecontrol
+from urllib.parse import quote
 import google.auth.transport.requests
 import requests
 import json
@@ -21,6 +23,7 @@ flow = Flow.from_client_secrets_file(
     client_secrets_file = "login_creds.json",
 	scopes=["https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email", "openid"],
     redirect_uri="https://orlinab.pythonanywhere.com/callback" # FIX THIS WHEN YOU DEPLOY
+    # redirect_uri="http://localhost/callback" # FIX THIS WHEN YOU DEPLOY
 )
 
 cred = credentials.Certificate("./credentials.json")
@@ -74,7 +77,6 @@ def callback():
         audience=GOOGLE_CLIENT_ID
     )
     session.update(id_info)
-    print(session)
     return redirect(session.get('from_page', '/'))
 
 # Landing Page
@@ -363,10 +365,10 @@ def todo_toggleitem(list_id, item_id):
 def todo_login():
     return render_template('todo_login/index.htm')
 
-def check_email_exists(email):
-    docref = db.document(f'todo_list_login_users/{email}')
+def check_email_exists(email, docpath):
+    docref = db.document(f'{docpath}/{email}')
     if not docref.get().exists:
-        db.document(f'todo_list_login_users/{email}').set({
+        db.document(f'{docpath}/{email}').set({
             'name': session['name'],
             'timestamp': firestore.SERVER_TIMESTAMP
         })
@@ -374,7 +376,8 @@ def check_email_exists(email):
 @app.route('/todo-login/addlist')
 def todo_login_addlist():
     email = session['email']
-    check_email_exists(email)
+    # todo_list_login_users
+    check_email_exists(email, 'todo_list_login_users')
     if 'name' in request.args:
         name = request.args['name']
         db.collection(f'todo_list_login_users/{email}/todo_list').add({
@@ -386,7 +389,7 @@ def todo_login_addlist():
 @app.route('/todo-login/additem/<list_id>')
 def todo_login_additem(list_id):
     email = session['email']
-    check_email_exists(email)
+    check_email_exists(email, 'todo_list_login_users')
     if 'name' in request.args:
         docref = db.document(f'todo_list_login_users/{email}/todo_list/{list_id}')
         if docref.get().exists:
@@ -443,7 +446,119 @@ def todo_login_list():
         out.append(doc_dict)
     return jsonify(out)
  
+# Movie Reviews
+# -------------
+def to_title(title):
+    exceptions = [
+        'and', 'as', 'but', 'for', 'if', 'nor', 'or', 'so', 'yet', 'a', 'an', 'the',
+        'as', 'at', 'by', 'for', 'in', 'of', 'off', 'on', 'per', 'to', 'up', 'via'
+    ]
+    return ' '.join(t[0].upper() + t[1:] if i==0 or not t.lower() in exceptions else t.lower() for i,t in enumerate(title.split('-')))
 
+@app.route('/movie')
+def movie():
+    return render_template('/movie/index.htm')
+
+@app.route('/movie/make-post', endpoint='movie_make_post')
+@required_login('/movie/make-post')
+def movie_make_post():
+    return send_from_directory(directory=app.static_folder, path='movie/make_post.htm')
+
+@app.route('/movie/create-post', endpoint='movie_create_post')
+@required_login('/movie/create-post')
+def movie_create_post():
+    email = session['email']
+    check_email_exists(email, 'movie_users')
+    if 'movie_title' in request.args and 'movie_rating' in request.args:
+        title = request.args['movie_title']
+        movie_id = '-'.join(title.lower().split())
+        db.collection(f'movie_users/{email}/reviews').add({
+            'movie_id': movie_id,
+            'movie_rating': request.args['movie_rating'],
+            'review_title': request.args['review_title'],
+            'review_content': request.args['review_content'],
+            'author_id': email,
+            'author': session['name'],
+            'timestamp': firestore.SERVER_TIMESTAMP,
+        })
+    return redirect('/movie')
+
+@app.route('/movie/del-post/<post_id>', endpoint='movie_del_post')
+def movie_del_post(post_id):
+    if not 'email' in session:
+        return redirect('/movie')
+    email = session['email']
+    db.document(f'movie_users/{email}/reviews/{post_id}').delete()
+    return redirect('/movie')
+
+@app.route('/movie/gettitles')
+def movie_gettitles():
+    titles = {}
+    users_ref = db.collection('movie_users').stream()
+    
+
+    for user in users_ref:
+        reviews_ref = db.collection(f'movie_users/{user.id}/reviews').stream()
+        for review in reviews_ref:
+            review_dict = review.to_dict()
+            movie_id = review_dict['movie_id']
+            data = titles.get(movie_id, {
+                'review_count': 0,
+                'total_rating': 0,
+                'movie_title': to_title(movie_id),
+            })
+            titles[movie_id] = {
+                'review_count': data['review_count'] + 1,
+                'total_rating': data['total_rating'] + int(review_dict['movie_rating']),
+                'movie_title': data['movie_title'],
+            }
+    return titles
+
+@app.route('/movie/getreviews/<movie_id>')
+def movie_getreviews(movie_id):
+    users_ref = db.collection('movie_users').stream()
+    out = []
+    for user in users_ref:
+        reviews_ref = db.collection(f'movie_users/{user.id}/reviews') \
+            .where(filter=FieldFilter("movie_id", '==', movie_id)).stream()
+        for review in reviews_ref:
+            review_dict = review.to_dict()
+            review_dict['id'] = review.id
+            out.append(review_dict)
+    return jsonify(sorted(out, key=lambda r: r['timestamp'], reverse=True))
+
+@app.route('/movie/reviews/<movie_id>')
+def movie_reviews(movie_id):
+    return render_template('movie/reviews.htm', movie_id=quote(movie_id, safe=''), movie_title=to_title(movie_id))
+
+@app.route('/movie/getreviewsself')
+def movie_getreviewsself():
+    if not 'email' in session:
+        return redirect('/movie')
+    email = session['email']
+    reviews_ref = db.collection(f'movie_users/{email}/reviews').stream()
+    out = []
+    for review in reviews_ref:
+        review_dict = review.to_dict()
+        review_dict['id'] = review.id
+        out.append(review_dict)
+    return jsonify(sorted(out, key=lambda r: r['timestamp'], reverse=True))       
+
+@app.route("/movie/profile", endpoint='movie_profile')
+@required_login('/movie/profile')
+def movie_profile():
+    return render_template('movie/profile.htm', given_name=session['given_name'])
+
+@app.route("/movie/login", endpoint='movie_login')
+@required_login('/movie/login')
+def movie_login():
+    return redirect("/movie")
+
+@app.route("/movie/logout") # Logout Endpoint
+def movie_logout():
+    session.clear()
+    return redirect("/movie")
+   
 if __name__ == "__main__":
     app.json.sort_keys = False
     app.run(host='0.0.0.0', port=80, debug=True)

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>	
+	<link rel="stylesheet" type="text/css" href="/static/movie/stylesheet.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<title>Create Your Review!</title>
+</head>
+<body>
+	<div id="header">
+		Make your Review!
+	</div>
+	<div id="content">
+	<div id="questions_container">
+		<form action="/movie/create-post" method="GET">
+			<div class="question" id="summary">
+				<h1>Movie Title:</h1>
+				<input required type="text" name="movie_title" maxlength="96">
+				<br>
+				<h1>Star Rating:</h1>
+				<div class="rating">
+				  <label>
+					<input required type="radio" name="movie_rating" value="1" />
+					<span class="icon fa fa-star"></span>
+				  </label>
+				  <label>
+					<input required type="radio" name="movie_rating" value="2" />
+					<span class="icon fa fa-star"></span>
+					<span class="icon fa fa-star"></span>
+				  </label>
+				  <label>
+					<input required type="radio" name="movie_rating" value="3" />
+					<span class="icon fa fa-star"></span>
+					<span class="icon fa fa-star"></span>
+					<span class="icon fa fa-star"></span>   
+				  </label>
+				  <label>
+					<input required type="radio" name="movie_rating" value="4" />
+					<span class="icon fa fa-star"></span>
+					<span class="icon fa fa-star"></span>
+					<span class="icon fa fa-star"></span>
+					<span class="icon fa fa-star"></span>
+				  </label>
+				  <label>
+					<input required type="radio" name="movie_rating" value="5" />
+					<span class="icon fa fa-star"></span>
+					<span class="icon fa fa-star"></span>
+					<span class="icon fa fa-star"></span>
+					<span class="icon fa fa-star"></span>
+					<span class="icon fa fa-star"></span>
+				  </label>
+				</div>
+			</div>
+
+			<div class="question" id="review">
+				<h1>Review Title</h1>
+				<label>
+				<input required type="text" name="review_title" maxlength="96">
+				</label>
+
+				<h1>Movie Review</h1>
+				<label>
+				<textarea rows="11", cols="55" name="review_content" maxlength="640"></textarea>
+				</label>
+			</div>
+			<label>
+			<input type="submit">
+			</label>
+		</form>
+	</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+
+<html lang="en-US">
+<head>
+	<link rel="stylesheet" type="text/css" href="/static/movie/stylesheet.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<script type="text/javascript" src="/static/movie/titles.js"></script>
+	<title>Movie Reviews</title>
+</head>
+<body>
+	<div id="banner">
+		<div id="info">
+			{% if 'given_name' in session %}
+				<a href=/movie/profile>{{ session['given_name'] }}</a>
+				<a href="/movie/logout">log out</a>
+			{% else %}
+				<span>You are not logged in.</span>
+				<a href="/movie/login">log in</a>
+			{% endif %}
+		</div>
+	</div>
+	<div id="header">
+		<h1>Movie Reviews</h1>
+		<a href="/movie/make-post">
+			Create your own review!
+		</a>
+	</div>
+	<div id="content">
+		<ul id="titles_container">
+		</ul>
+	</div>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+
+<html lang="en-US">
+<head>
+	<link rel="stylesheet" type="text/css" href="/static/movie/stylesheet.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<script type="text/javascript" src="/static/movie/reviews.js"></script>
+	<title>Movie Reviews</title>
+</head>
+<body>
+	<div id="banner">
+		<a href="/movie">
+			main.
+		</a>
+	</div>
+	<div id="header">
+			<h1>{{ movie_title }}</h1>
+	</div>
+	<div id="content">
+		<ul class="reviews_container" id="reviews_container0">
+		</ul>
+		<ul class="reviews_container" id="reviews_container1">
+		</ul>
+		<ul class="reviews_container" id="reviews_container2">
+		</ul>
+	</div>
+<script>
+	console.log("{{ movie_id }}")
+	window.onload = display("{{ movie_id }}")
+</script>
+</body>
+</html>

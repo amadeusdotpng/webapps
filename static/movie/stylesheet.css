@@ -1,0 +1,165 @@
+body {
+	background-color: #e8ecf2;
+	color: #0c2744;
+	font-family: Consolas;
+}
+
+#header {
+	margin: 3em 0 2em 0;
+	font-size: 2em;
+	text-align: center;
+}
+
+#header h1 {
+	margin: 0.75em 0em 0.5em 0em;
+}
+
+#banner {
+	display: flex;
+	justify-content: right;
+	font-size: 1.25em;
+	margin: 0 0.5em;
+}
+
+#content {
+	display: flex;
+	justify-content: center;
+}
+
+#titles_container, #profile_reviews {
+	width: 50%;
+	margin: 25px 0px 0px 25px;
+	padding: 0;
+}
+
+#questions_container {
+	width: 30%;
+}
+
+.question {
+	background-color: #fbfcfc;
+	min-height: 5em;
+	margin: 2em 0;
+	padding: 3em 2.5em 2em;
+	box-shadow: 0px 5px 10px #ffffff;
+}
+.question h1 {
+	font-size: 1.25em;
+}
+
+.question input[type=text] {
+	width: 20em;
+}
+
+#summary h1 {
+	display: inline;
+	margin: 0em 1em 1em 0em;
+}
+
+.star-checked {
+	color: orange;
+}
+
+.reviews_container {
+	width: 33%;
+	margin: 25px 0px 0px 25px;
+	padding: 0;
+}
+
+.review_wrapper h1 {
+	display: inline;
+	padding: 0 1em 0 0;
+}
+
+.review_wrapper img {
+	cursor: pointer;
+}
+
+.title, .review {
+	background-color: #fbfcfc;
+	min-height: 15em;
+	margin: 2em 0;
+	text-align: left;
+	font-size: 16px;
+	box-shadow: 0px 5px 10px #ffffff;
+	padding: 3em 2.5em 2em;
+}
+
+.review h1 {
+	font-size: 1.75em;
+	margin: 0 0 0.75em 0;
+}
+
+.review h2, .star_rating h2 {
+	display: inline;
+}
+
+.review p {
+	font-size: 1.25em;
+	margin: 0.5em 1em 0;
+}
+
+
+/* star rating voodoo css whatever */
+.rating {
+  display: inline-block;
+  position: relative;
+  font-size: 1.5em;
+	margin: 0.5em 0 0 0;
+}
+
+.rating label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+}
+
+.rating label:last-child {
+  position: static;
+}
+
+.rating label:nth-child(1) {
+  z-index: 5;
+}
+
+.rating label:nth-child(2) {
+  z-index: 4;
+}
+
+.rating label:nth-child(3) {
+  z-index: 3;
+}
+
+.rating label:nth-child(4) {
+  z-index: 2;
+}
+
+.rating label:nth-child(5) {
+  z-index: 1;
+}
+
+.rating label input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+}
+
+.rating label .icon {
+  color: transparent;
+}
+
+.rating label:last-child .icon {
+  color: #000;
+}
+
+.rating:not(:hover) label input:checked ~ .icon,
+.rating:hover label:hover input ~ .icon {
+  color: orange;
+}
+
+.rating label input:focus:not(:checked) ~ .icon:last-child {
+  color: #000;
+  text-shadow: 0 0 5px #09f;
+}
