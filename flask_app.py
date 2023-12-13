@@ -474,9 +474,9 @@ def movie_create_post():
         movie_id = '-'.join(title.lower().split())
         db.collection(f'movie_users/{email}/reviews').add({
             'movie_id': movie_id,
-            'movie_rating': request.args['movie_rating'],
-            'review_title': request.args['review_title'],
-            'review_content': request.args['review_content'],
+            'movie_rating': min(5, max(1, request.args['movie_rating'])),
+            'review_title': request.args.get('review_title', ''),
+            'review_content': request.args.get('review_content', ''),
             'author_id': email,
             'author': session['name'],
             'timestamp': firestore.SERVER_TIMESTAMP,
